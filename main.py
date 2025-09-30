@@ -35,17 +35,16 @@ genlogger.debug("Train_dataset resolved")
 train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True)
 genlogger.debug("train_loader resolved")
 
-# counting = 0
-# for images, counts in train_loader:
-#     print("Batch images:", images.shape)
-#     print("Batch counts:", counts)
-#     counting += 1
-#     if counting == 3:
-#         break
+counting = 0
+for images, counts in train_loader:
+    print("Batch images:", images.shape)
+    counting += 1
+    if counting == 1:
+        break
 
 
 device = torch.device("mps" if torch.mps.is_available() else "cpu")
-genlogger.debug(f"Device configured to : {device}")
+print(f"Device configured to : {device}")
 
 # ---MODEL-CREATION-----
 
@@ -85,7 +84,8 @@ genlogger.debug(f"Model set to run on device ({device})")
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
-epochs = 3
+epochs = 6
+print(f"Numner of epochs defined: {epochs}")
 
 size_of_train = len(train_loader)
 
