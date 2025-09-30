@@ -4,13 +4,23 @@
     architecture style before loading the weights
 
 Model #1
-Name_id:
-Structure:
-    nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, padding=1),
-    nn.ReLU(),
-    nn.MaxPool2d(kernel_size=2, stride=2),
-    nn.Flatten(),
-    nn.Linear(32*128*128,128),
-    nn.ReLU(),
-    nn.Linear(128, 1)
+Here is the architecture of the model created: 
+Sequential(
+  (0): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+  (1): ReLU()
+  (2): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
+  (3): Flatten(start_dim=1, end_dim=-1)
+  (4): Linear(in_features=524288, out_features=128, bias=True)
+  (5): ReLU()
+  (6): Linear(in_features=128, out_features=1, bias=True)
+)
+Epoch 1 in progress: 100.0%
+Epoch 1 out of 3 DONE, Loss: 9667.7682
+Epoch 2 in progress: 100.0%
+Epoch 2 out of 3 DONE, Loss: 7059.2121
+Epoch 3 in progress: 100.0%
+Epoch 3 out of 3 DONE, Loss: 5911.7101
+Model Saved!
+Testing the model => 100.0%
+Test MAE: 879.85, RMSE: 289.88
 
