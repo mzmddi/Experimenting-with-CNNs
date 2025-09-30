@@ -25,10 +25,10 @@ import torch.nn as nn
 
 # ---INPUT-PrePROCESSING-----
 
-genlogger.debug("Starting -INPUT-PrePROCESSING- section")
+genlogger.debug("Starting to process the input...")
 
-train_img_dir = "training_datasets/ShanghaiTech/part_A/train_data/images"
-train_gt_dir  = "training_datasets/ShanghaiTech/part_A/train_data/ground_truth"
+train_img_dir = "training_datasets/ShanghaiTech/part_B/train_data/images"
+train_gt_dir  = "training_datasets/ShanghaiTech/part_B/train_data/ground_truth"
 
 train_dataset = TrainingDataset(train_img_dir, train_gt_dir)
 genlogger.debug("Train_dataset resolved")
@@ -48,6 +48,8 @@ device = torch.device("mps" if torch.mps.is_available() else "cpu")
 genlogger.debug(f"Device configured to : {device}")
 
 # ---MODEL-CREATION-----
+
+genlogger.debug("Starting to create the model...")
 
 """
 This section will follow the model creation listed in the history_of_models.txt file.
@@ -71,7 +73,11 @@ model = nn.Sequential(
 )
 genlogger.debug("Model created")
 
+print(f"\nHere is the architecture of the model created: \n{model}")
+
 # ---TRAINING-THE-MODEL---
+
+genlogger.debug("Starting training the model...")
 
 model  = model.to(device=device)
 genlogger.debug(f"Model set to run on device ({device})")
@@ -106,11 +112,57 @@ for e in range(epochs):
     
     print(f"\nEpoch {e+1} out of {epochs} DONE, Loss: {running_loss/len(train_loader):.4f}")
     
-# ---TESTING-THE-MODEL----
-
 # ---SAVING-THE-MODEL----
+# genlogger.debug("Saving the model...")
 
-torch.save(model.state_dict(), "first_model.pth")
+# torch.save(model.state_dict(), "models/first_model.pth")
+# print("\nModel Saved!")
+# genlogger.debug(f"Model saved!")
+
+# ---TESTING-THE-MODEL----
+genlogger.debug("Starting Testing the model...")
+
+test_img_dir = "training_datasets/ShanghaiTech/part_B/test_data/images"
+test_gt_dir  = "training_datasets/ShanghaiTech/part_B/test_data/ground_truth"
+
+test_dataset = TrainingDataset(train_img_dir, train_gt_dir)
+genlogger.debug("Test_dataset resolved")
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=16, shuffle=False)
+genlogger.debug("test_loader resolved")
+
+model.eval()
+
+num_samples = len(test_loader)
+
+with torch.no_grad():
+    total_mae = 0
+    total_mse = 0
+    
+    counter = 0
+    
+    print("\n")
+    
+    for img, count in test_loader:
+        img, count = img.to(device), count.to(device)
+        
+        outputs = model(img)
+        
+        abs_error = torch.abs(outputs - count)
+        sq_error = (outputs - count) ** 2
+        
+        total_mae += abs_error.sum().item()
+        total_mse += sq_error.sum().item()
+        
+        counter += 1
+        
+        print(f"Testing the model => {(counter/num_samples)*100:.1f}%", end="\r")
+        
+    mae = total_mae / num_samples
+    rmse = (total_mse / num_samples) ** 0.5
+    
+print(f"\nTest MAE: {mae:.2f}, RMSE: {rmse:.2f}\n")
+    
+    
     
 
 
