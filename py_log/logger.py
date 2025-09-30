@@ -13,7 +13,7 @@ from datetime import datetime, timezone, timedelta
 LOG_DIRECTORY = os.path.join(os.path.dirname(__file__), "logging")
 os.makedirs(LOG_DIRECTORY, exist_ok=True)
 
-log_level = 10
+log_level = 20
 
 class EasternTimeFormatter(logging.Formatter):
     def formatTime(self, record, datefmt=None):
