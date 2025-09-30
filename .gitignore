@@ -208,3 +208,6 @@ __marimo__/
 
 # Training Datasets
 training_datasets/*
+
+# Any model created
+*.pth
