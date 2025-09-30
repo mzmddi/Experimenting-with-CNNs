@@ -1,3 +1,16 @@
 -- history of the different models
 -- All models will be saved in the model directory under root
+-- since we are saving the .state_dict() (just the weights), when reloading, we need to absolutely copy the same 
+    architecture style before loading the weights
+
+Model #1
+Name_id:
+Structure:
+    nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, padding=1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size=2, stride=2),
+    nn.Flatten(),
+    nn.Linear(32*128*128,128),
+    nn.ReLU(),
+    nn.Linear(128, 1)
 
