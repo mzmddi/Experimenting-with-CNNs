@@ -19,6 +19,7 @@ from dataset_loading import TrainingDataset
 import torch
 import torch.nn as nn
 import json
+import matplotlib.pyplot as plt
 # ---------------
 
 
@@ -33,7 +34,7 @@ train_gt_dir  = "training_datasets/ShanghaiTech/part_B/train_data/ground_truth"
 
 train_dataset = TrainingDataset(train_img_dir, train_gt_dir)
 genlogger.debug("Train_dataset resolved")
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=4, shuffle=True)
 genlogger.debug("train_loader resolved")
 
 counting = 0
@@ -69,14 +70,10 @@ model = nn.Sequential(
     nn.ReLU(),
     nn.MaxPool2d(kernel_size=2, stride=2),
     
-    nn.Conv2d(in_channels=64, out_channels=128, kernel_size=2, stride=1, padding=1),
-    nn.ReLU(),
-    nn.MaxPool2d(kernel_size=2, stride=2),
-    
     ## neural network section
     nn.Flatten(),
     
-    nn.Linear(131072,128),
+    nn.Linear(64*64*64,128),
     nn.ReLU(),
     nn.Linear(128, 1)
 )
@@ -94,7 +91,7 @@ genlogger.debug(f"Model set to run on device ({device})")
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
-epochs = 1
+epochs = 4
 print(f"Numner of epochs defined: {epochs}")
 
 size_of_train = len(train_loader)
@@ -136,7 +133,7 @@ test_gt_dir  = "training_datasets/ShanghaiTech/part_B/test_data/ground_truth"
 
 test_dataset = TrainingDataset(train_img_dir, train_gt_dir)
 genlogger.debug("Test_dataset resolved")
-test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=32, shuffle=False)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=4, shuffle=False)
 genlogger.debug("test_loader resolved")
 
 model.eval()
@@ -202,8 +199,8 @@ num_reached = len(stats)
 
 model_dict["model_name"] = f"model_{num_reached}"
 model_dict["num_of_epochs"] = f"{epochs}"
-model_dict["mae"] = f"{mae}"
-model_dict["rmse"] = f"{rmse}"
+model_dict["mae"] = f"{round(mae)}"
+model_dict["rmse"] = f"{round(rmse)}"
 model_dict["num_of_layers"] = f"{num_of_layers}"
 model_dict["layers"] = layers
 
@@ -216,9 +213,20 @@ print("New stats saved in the stats.json file!")
 
 # ---CREATING-DIAGRAM----
 
+mae = []
+model_name = []
 
+for m in stats:
+    
+    mae.append(m["mae"])
+    model_name.append(m["model_name"])
+    
+plt.scatter(model_name, mae)
 
+plt.title("MAE value for ALL")
+plt.xlabel("Model Names")
+plt.ylabel("MAE")
 
+plt.savefig("mae_all.pdf")
 
-
-
+plt.show()
