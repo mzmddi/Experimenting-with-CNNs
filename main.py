@@ -18,6 +18,7 @@ from torch.nn import Sequential
 from dataset_loading import TrainingDataset
 import torch
 import torch.nn as nn
+import json
 # ---------------
 
 
@@ -32,7 +33,7 @@ train_gt_dir  = "training_datasets/ShanghaiTech/part_B/train_data/ground_truth"
 
 train_dataset = TrainingDataset(train_img_dir, train_gt_dir)
 genlogger.debug("Train_dataset resolved")
-train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=16, shuffle=True)
+train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=8, shuffle=True)
 genlogger.debug("train_loader resolved")
 
 counting = 0
@@ -59,20 +60,29 @@ This means that this section is constantly being overwritten, but a copy is kept
 model = nn.Sequential(
     # convolution component
     # convolution block #1
-    nn.Conv2d(in_channels=3, out_channels=32, kernel_size=3, stride=1, padding=1),
+    nn.Conv2d(in_channels=3, out_channels=32, kernel_size=2, stride=1, padding=1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size=2, stride=2),
+    
+    # convolution block #1
+    nn.Conv2d(in_channels=32, out_channels=64, kernel_size=2, stride=1, padding=1),
+    nn.ReLU(),
+    nn.MaxPool2d(kernel_size=2, stride=2),
+    
+    nn.Conv2d(in_channels=64, out_channels=128, kernel_size=2, stride=1, padding=1),
     nn.ReLU(),
     nn.MaxPool2d(kernel_size=2, stride=2),
     
     ## neural network section
     nn.Flatten(),
     
-    nn.Linear(32*128*128,128),
+    nn.Linear(131072,128),
     nn.ReLU(),
     nn.Linear(128, 1)
 )
 genlogger.debug("Model created")
 
-print(f"\nHere is the architecture of the model created: \n{model}")
+print(f"Here is the architecture of the model created: \n{model}")
 
 # ---TRAINING-THE-MODEL---
 
@@ -84,7 +94,7 @@ genlogger.debug(f"Model set to run on device ({device})")
 criterion = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
-epochs = 6
+epochs = 1
 print(f"Numner of epochs defined: {epochs}")
 
 size_of_train = len(train_loader)
@@ -93,7 +103,6 @@ size_of_train = len(train_loader)
 for e in range(epochs):
     running_loss = 0.0
     counter = 0
-    print("\n")
     for img, count in train_loader:
         img, count = img.to(device), count.to(device)
         
@@ -127,7 +136,7 @@ test_gt_dir  = "training_datasets/ShanghaiTech/part_B/test_data/ground_truth"
 
 test_dataset = TrainingDataset(train_img_dir, train_gt_dir)
 genlogger.debug("Test_dataset resolved")
-test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=16, shuffle=False)
+test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=32, shuffle=False)
 genlogger.debug("test_loader resolved")
 
 model.eval()
@@ -139,8 +148,6 @@ with torch.no_grad():
     total_mse = 0
     
     counter = 0
-    
-    print("\n")
     
     for img, count in test_loader:
         img, count = img.to(device), count.to(device)
@@ -161,8 +168,57 @@ with torch.no_grad():
     rmse = (total_mse / num_samples) ** 0.5
     
 print(f"\nTest MAE: {mae:.2f}, RMSE: {rmse:.2f}\n")
+
+
+# ---ADDING-THE-STATS---
+
+"""
+Structure of components in list of stats (json file)
+model = {
+    "model_name":"",
+    "num_of_epochs":"",
+    "mae":"",
+    "rmse":""
+    "num_of_layers":"",
+    "layers": {
+        layer_1:"",
+        layer_2:"",
+        # etc etc etc
+    }
+}
+"""
+
+num_of_layers = len(model)
+layers = {}
+for i in range(len(model)):
+    layers[f"layer_{i+1}"] = f"{model[i]}"
     
+model_dict = {}
+
+with open("stats.json", "r") as f:
+    stats = json.load(f)
+
+num_reached = len(stats)
+
+model_dict["model_name"] = f"model_{num_reached}"
+model_dict["num_of_epochs"] = f"{epochs}"
+model_dict["mae"] = f"{mae}"
+model_dict["rmse"] = f"{rmse}"
+model_dict["num_of_layers"] = f"{num_of_layers}"
+model_dict["layers"] = layers
+
+stats.append(model_dict)
+
+with open("stats.json", "w") as f:
+    json.dump(stats, f, indent=4)
     
-    
+print("New stats saved in the stats.json file!")
+
+# ---CREATING-DIAGRAM----
+
+
+
+
+
 
 
