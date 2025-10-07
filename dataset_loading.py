@@ -11,6 +11,7 @@ import scipy.io as sio
 import os
 from PIL import Image
 import torchvision.transforms as transforms
+import re
 # -------------
 
 class TrainingDataset(Dataset):
@@ -24,7 +25,10 @@ class TrainingDataset(Dataset):
         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
                             std=[0.229, 0.224, 0.225])
 ])
-        self.img_files = sorted([f for f in os.listdir(img_dir) if f.endswith('.jpg')])
+        self.img_files = sorted(
+            [f for f in os.listdir(img_dir) if f.endswith('.jpg')],
+            key=lambda x: int(re.search(r'\d+', x).group())
+)
     
         genlogger.debug("End of constructor of TrainingDataset class")
         
