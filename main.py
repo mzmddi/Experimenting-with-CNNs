@@ -230,6 +230,14 @@ for epoch in epochs:
 
                             del model
                             torch.cuda.empty_cache()
+                            
+    epochs.remove(epoch)
+    
+    with open("permutation_values.json", "w") as json_file:
+        f[0]["epochs"] = epochs
+        json.dump(f, json_file, indent=2)
+        
+    exit()
 
 # ---CREATING-DIAGRAM----
 """
