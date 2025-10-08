@@ -9,7 +9,7 @@ import torchvision.transforms as transforms
 import re
 # -------------
 
-class Training_Dataset(Dataset):
+class process_dataset(Dataset):
     
     def __init__(self, img_dir, gt_dir):
         self.img_dir = img_dir

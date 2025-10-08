@@ -1,19 +1,26 @@
 # ---NOTES---
-
-
 # ---IMPORTS---
-from components.TrainingDataset import Training_Dataset
+from components.process_dataset import process_dataset
 import torch
 # ---CODE---
 
-def get_dataset(batch_size=2):
+def get_dataset(batch_size=2, mode=""):
     
-    train_img_dir = "./training_dataset/train_data/images"
-    train_gt_dir = "./training_dataset/train_data/ground_truth"
+    if mode == "train":
+        img_dir = "./training_dataset/train_data/images"
+        gt_dir = "./training_dataset/train_data/ground_truth"
+        
+    elif mode == "test":
+        img_dir = "./training_dataset/test_data/images"
+        gt_dir = "./training_dataset/test_data/ground_truth"
     
-    train_dataset = Training_Dataset(train_img_dir, train_gt_dir)
+    else: 
+        print("Wrong parameters!")
+        exit()
     
-    return torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
+    dataset = process_dataset(img_dir, gt_dir)
+    
+    return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False)
     
     
 
