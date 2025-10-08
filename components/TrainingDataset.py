@@ -1,12 +1,7 @@
-"""
-dataset_loading.py
-processes the dataset and returns the Dataset object from torch.utils.data Dataset
-"""
-
+# ---NOTES---
 # ---IMPORTS---
 from torch.utils.data import Dataset
 import torch
-from py_log.logger import genlogger
 import scipy.io as sio
 import os
 from PIL import Image
@@ -29,12 +24,8 @@ class TrainingDataset(Dataset):
             [f for f in os.listdir(img_dir) if f.endswith('.jpg')],
             key=lambda x: int(re.search(r'\d+', x).group())
 )
-    
-        genlogger.debug("End of constructor of TrainingDataset class")
         
     def __len__(self):
-        
-        genlogger.debug("Accessed TrainingDataset.__len__()")
         return len(self.img_files)
     
     def __getitem__(self, idx):
