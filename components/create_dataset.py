@@ -2,7 +2,7 @@
 
 
 # ---IMPORTS---
-from TrainingDataset import TrainingDataset
+from components.TrainingDataset import Training_Dataset
 import torch
 # ---CODE---
 
@@ -11,7 +11,7 @@ def get_dataset(batch_size=2):
     train_img_dir = "./training_dataset/train_data/images"
     train_gt_dir = "./training_dataset/train_data/ground_truth"
     
-    train_dataset = TrainingDataset(train_img_dir, train_gt_dir)
+    train_dataset = Training_Dataset(train_img_dir, train_gt_dir)
     
     return torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
     
