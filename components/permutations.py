@@ -13,6 +13,7 @@ import json
 from pathlib import Path
 # ---CODE---
 def permutate():
+    # creates the permutation_values.json file is not exist and permutates the values for the model
     
     file_path = Path("./supporting_files/permutation_values.json")
     if not file_path.exists():
@@ -21,7 +22,6 @@ def permutate():
             dump = []
             json.dump(dump, json_file, indent=4)
             
-    
     count = 0
     print("\n")
         
@@ -60,3 +60,21 @@ def permutate():
         
         print(f"Number of permutations: {len(permutations)}\n")
         print("Permutation finished. Find the list of lists at ./supporting_files/permutation_values.json!\n")
+        
+def get_first_permutation_list():
+    # returns the first [0] list of values of the permutations
+    
+    file_path = Path("./supporting_files/permutation_values.json")
+    if not file_path.exists():
+        print("./supporting_files/permutation_values.json does not exist!\n")
+        print("Please run 'python3 cnnExperimenting.py -permutate' first to create permutation list!\n")
+        exit()
+    
+    with open(file_path, "r") as json_file:
+        
+        all_permutations_lists = json.load(json_file)
+    
+    return all_permutations_lists[0]
+    
+    
+    
