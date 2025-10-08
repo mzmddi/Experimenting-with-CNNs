@@ -5,15 +5,20 @@ Entry point of the entire program
 
 # ---IMPORTS---
 import sys
+import os
+from components.make_permutations import permutate
 # ---CODE---
 
 if __name__=="__main__":
     
-    if len(sys.argv) == 2:
+    os.system("clear")
+    
+    if len(sys.argv) == 1:
         # default execution
         pass
     
     elif "-permutate" in sys.argv:
+        permutate()
         pass
     
     elif "-train" in sys.argv:
@@ -40,5 +45,3 @@ if __name__=="__main__":
         
         elif "-batchSize" in sys.argv:
             pass
-    
-    pass
