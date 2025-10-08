@@ -207,7 +207,9 @@ marimo/_lsp/
 __marimo__/
 
 # Training Datasets
-training_datasets/*
+training_dataset/*
 
 # Any model created
 *.pth
+
+
