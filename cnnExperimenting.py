@@ -15,15 +15,12 @@ if __name__=="__main__":
     
     os.system("clear")
     
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 1 or "-train" in sys.argv:
         # default execution
         pass
     
     elif "-permutate" in sys.argv:
         permutate()
-        pass
-    
-    elif "-train" in sys.argv:
         pass
     
     elif "-visualize" in sys.argv:
