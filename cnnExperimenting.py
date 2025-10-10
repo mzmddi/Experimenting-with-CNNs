@@ -8,7 +8,11 @@ FOOTNOTES:
 # ---IMPORTS---
 import sys
 import os
-from components.make_permutations import permutate
+from components.permutations import permutate, get_first_permutation_list, update_json_file_list
+from components.create_dataset import get_dataset
+from components.model_blueprint import build_model
+from components.training import train_this_model
+import torch
 # ---CODE---
 
 if __name__=="__main__":
@@ -17,8 +21,41 @@ if __name__=="__main__":
     
     if len(sys.argv) == 1 or "-train" in sys.argv:
         # default execution
-        pass
-    
+        
+        while True:
+            
+            perm_list = get_first_permutation_list()
+            
+            batch_size = perm_list[0]
+            # see footnote (1) above for index definitions
+            print(f"Batch_size = {batch_size}")
+            
+            train_dataset = get_dataset(batch_size=batch_size, mode="train")
+            print("Training dataset retrieved!")
+            
+            device = torch.device("mps" if torch.mps.is_available() else "cpu")
+            print(f"Device configured to : {device}")
+            
+            model = build_model(num_conv_layers=perm_list[1],
+                                conv_start=perm_list[2],
+                                kernel_size=perm_list[3],
+                                pool_size=perm_list[4],
+                                num_neural_layers=perm_list[5],
+                                neural_start=perm_list[6])
+            print("Model created!\n")
+            
+            model = model.to(device=device)
+            print("Model set to use the mps device!")
+            
+            train_this_model(model, train_dataset, device, batch_size=batch_size)
+            
+            update_json_file_list()
+            
+            del model
+            torch.cuda.empty_cache()
+            
+            print("Row loop completed! Model deleted from memory and torch cache emptied.\nRestarting loop with new index[0] list!")
+        
     elif "-permutate" in sys.argv:
         permutate()
         pass
