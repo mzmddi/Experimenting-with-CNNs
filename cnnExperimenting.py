@@ -12,6 +12,7 @@ from components.permutations import permutate, get_first_permutation_list, updat
 from components.create_dataset import get_dataset
 from components.model_blueprint import build_model
 from components.training import train_this_model
+from components.visualize import visualize_mae_vs_all_models
 import torch
 # ---CODE---
 
@@ -25,6 +26,7 @@ if __name__=="__main__":
         while True:
             
             perm_list = get_first_permutation_list()
+            print(f"Permutation used for this iteration: {perm_list}")
             
             batch_size = perm_list[0]
             # see footnote (1) above for index definitions
@@ -62,10 +64,10 @@ if __name__=="__main__":
     
     elif "-visualize" in sys.argv:
         
-        if len(sys.argv) == 3:
+        if len(sys.argv) == 2:
             # default -visualize flag
             # python3 main.py -visualize
-            pass
+            visualize_mae_vs_all_models()
             
         elif "-all" in sys.argv:
             pass
