@@ -66,9 +66,8 @@ def get_first_permutation_list():
     
     file_path = Path("./supporting_files/permutation_values.json")
     if not file_path.exists():
-        print("./supporting_files/permutation_values.json does not exist!\n")
-        print("Please run 'python3 cnnExperimenting.py -permutate' first to create permutation list!\n")
-        exit()
+        print("./supporting_files/permutation_values.json does not exist! Creating the file and permutating...\n")
+        permutate()
     
     with open(file_path, "r") as json_file:
         
