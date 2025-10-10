@@ -1,6 +1,8 @@
 # ---NOTES---
 """
 Entry point of the entire program
+FOOTNOTES: 
+    (1) [batch_size, num_conv_layers, conv_start, kernel_size, pool_size, num_neural_layers, neural_start]
 """
 
 # ---IMPORTS---
