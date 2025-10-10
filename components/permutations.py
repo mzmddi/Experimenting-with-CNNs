@@ -74,6 +74,22 @@ def get_first_permutation_list():
         all_permutations_lists = json.load(json_file)
     
     return all_permutations_lists[0]
+
+def update_json_file_list():
+    
+    file_path = Path("./supporting_files/permutation_values.json")
+    
+    with open(file_path, "r") as json_file:
+        perm_list = json.load(json_file)
+    
+    old_length = len(perm_list)
+    just_completed_row = perm_list.pop(0)
+    new_length = len(perm_list)
+    
+    with open(file_path, "w") as json_file:
+        json.dump(perm_list, json_file, indent=4)
+    
+    print(f"Index 0 of json file got popped (row : {just_completed_row})! Length of file is (old->new): {old_length} -> {new_length}.")
     
     
     
