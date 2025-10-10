@@ -23,7 +23,7 @@ def train_this_model(model, train_dataset, device, batch_size=2):
         criterion = nn.MSELoss()
         optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4, weight_decay=1e-2)
                 
-        if epoch % 5 == 0 and epoch != 0:
+        if epoch % 25 == 0 and epoch != 0:
             # every 25 epochs, we pause training, switch to .eval() mode, test the model with test data, 
             #       record metrics, and return back to .train() mode for next epoch
             
