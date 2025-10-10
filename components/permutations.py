@@ -25,7 +25,7 @@ def permutate():
     count = 0
     print("\n")
         
-    for batch_size in [2, 4, 8, 16]:
+    for batch_size in [32, 48, 64]:
         for num_conv_layers in [1, 2, 3, 4]:
             for conv_start in [32, 64]:
                 for kernel_size in [3, 5]:
