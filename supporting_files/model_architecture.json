@@ -1,0 +1,7 @@
+{
+  "num_of_conv_layer": 2,
+  "starting_conv_channel": 32,
+  "conv_kernel_size": 3,
+  "num_of_neural_layer": 1,
+  "starting_neural_channel": 64
+}
