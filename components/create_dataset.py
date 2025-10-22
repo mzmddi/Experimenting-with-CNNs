@@ -1,4 +1,10 @@
 # ---NOTES---
+"""
+input params: 
+    - batch_size=2: int
+return:
+    - train_loader: DataLoader, val_loader: DataLoader, test_loader: DataLoader
+"""
 # ---IMPORTS---
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
@@ -6,7 +12,7 @@ import torch
 from torch.utils.data import random_split
 # ---CODE---
 
-def get_dataset(batch_size=2):
+def get_dataset(batch_size=16):
     
     transform = transforms.Compose([
         transforms.Resize((512,512)),
