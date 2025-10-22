@@ -1,90 +1,41 @@
 # ---NOTES---
 # ---IMPORTS---
-from components.process_dataset import process_dataset
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
 import torch
+from torch.utils.data import random_split
 # ---CODE---
 
-def get_dataset(batch_size=2, mode=""):
+def get_dataset(batch_size=2):
     
-    if mode == "train":
-        img_dir = "./training_dataset/train_data/images"
-        gt_dir = "./training_dataset/train_data/ground_truth"
-        
-    elif mode == "test":
-        img_dir = "./training_dataset/test_data/images"
-        gt_dir = "./training_dataset/test_data/ground_truth"
+    transform = transforms.Compose([
+        transforms.Resize((512,512)),
+        transforms.ToTensor(),
+        transforms.Normalize(
+        mean=[0.4883, 0.4553, 0.4170],
+        std=[0.2276, 0.2230, 0.2232]
+    )
+    ])
+    # this is the transformed used for the dataset
+    # resizes all images to 512x512
+    # toTensor()
+    # normalises with those values
+    # the mean and std values are found by calculating them before hand
     
-    else: 
-        print("Wrong parameters!")
-        exit()
+    dataset = datasets.ImageFolder(root="./training_dataset", transform=transform)
     
-    dataset = process_dataset(img_dir, gt_dir)
+    dataset_size = len(dataset)
+    train_size = int(0.8 * dataset_size)
+    val_size = int(0.1 * dataset_size)
+    test_size = dataset_size - train_size - val_size
+    # creating the sizes of each set of data
     
-    return torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    train_dataset, val_dataset, test_dataset = random_split(dataset, [train_size, val_size, test_size])
+    # using random_split(), the original dataset is split into 3 dinstinct sets
     
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    # creates a loader for each one of the datasets
     
-
-
-
-
-
-
-
-
-
-
-
-# OLD FILEs
-# -------------------------------------------------------------
-# # ---IMPORTS---
-# from torch.utils.data import Dataset
-# import torch
-# from py_log.logger import genlogger
-# import scipy.io as sio
-# import os
-# from PIL import Image
-# import torchvision.transforms as transforms
-# import re
-# # -------------
-
-# class TrainingDataset(Dataset):
-    
-#     def __init__(self, img_dir, gt_dir):
-#         self.img_dir = img_dir
-#         self.gt_dir = gt_dir
-#         self.transform = transforms.Compose([
-#         transforms.Resize((256, 256)),
-#         transforms.ToTensor(),
-#         transforms.Normalize(mean=[0.485, 0.456, 0.406], 
-#                             std=[0.229, 0.224, 0.225])
-# ])
-#         self.img_files = sorted(
-#             [f for f in os.listdir(img_dir) if f.endswith('.jpg')],
-#             key=lambda x: int(re.search(r'\d+', x).group())
-# )
-    
-#         genlogger.debug("End of constructor of TrainingDataset class")
-        
-#     def __len__(self):
-        
-#         genlogger.debug("Accessed TrainingDataset.__len__()")
-#         return len(self.img_files)
-    
-#     def __getitem__(self, idx):
-        
-#         img_path = os.path.join(self.img_dir, self.img_files[idx])
-        
-#         gt_path = os.path.join(self.gt_dir, 'GT_' + self.img_files[idx].replace('.jpg', '.mat'))
-        
-#         img = Image.open(img_path).convert('RGB')
-        
-#         mat = sio.loadmat(gt_path)
-#         points = mat['image_info'][0][0][0][0][0]
-#         count = points.shape[0]
-        
-#         if self.transform:
-#             img = self.transform(img)
-        
-#         return img, torch.tensor([count], dtype=torch.float32)
-# -------------------------------------------------------------
-            
+    return train_loader, val_loader, test_loader
