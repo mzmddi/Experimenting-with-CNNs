@@ -15,7 +15,7 @@ from torch.utils.data import random_split
 def get_dataset(batch_size=16):
     
     transform = transforms.Compose([
-        transforms.Resize((512,512)),
+        transforms.Resize((128,128)),
         transforms.ToTensor(),
         transforms.Normalize(
         mean=[0.4883, 0.4553, 0.4170],
@@ -23,7 +23,7 @@ def get_dataset(batch_size=16):
     )
     ])
     # this is the transformed used for the dataset
-    # resizes all images to 512x512
+    # resizes all images to 128x128
     # toTensor()
     # normalises with those values
     # the mean and std values are found by calculating them before hand
@@ -31,6 +31,9 @@ def get_dataset(batch_size=16):
     dataset = datasets.ImageFolder(root="./training_dataset", transform=transform)
     
     dataset_size = len(dataset)
+    print(f"Size of original dataset : {dataset_size}")
+    print(f"Assigned labeled from Datasets Class: {dataset.class_to_idx}")
+    # Assigned labeled from Datasets Class: {'Cat': 0, 'Dog': 1}
     train_size = int(0.8 * dataset_size)
     val_size = int(0.1 * dataset_size)
     test_size = dataset_size - train_size - val_size
@@ -38,10 +41,13 @@ def get_dataset(batch_size=16):
     
     train_dataset, val_dataset, test_dataset = random_split(dataset, [train_size, val_size, test_size])
     # using random_split(), the original dataset is split into 3 dinstinct sets
+    print(f"Train_dataset size: {len(train_dataset)}")
+    print(f"Val_dataset size: {len(val_dataset)}")
+    print(f"Test_dataset size: {len(test_dataset)}")
     
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
-    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
     # creates a loader for each one of the datasets
     
     return train_loader, val_loader, test_loader
