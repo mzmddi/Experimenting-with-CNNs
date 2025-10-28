@@ -30,10 +30,10 @@ def build_model(num_conv_layers, conv_start, kernel_size, pool_size, num_neural_
             conv_in_channels.append(3)
             conv_out_channels.append(conv_start)
             continue
+        
+        conv_in_channels.append(conv_out_channels[i-1])
+        conv_out_channels.append(conv_in_channels[i]*2)
 
-    conv_in_channels.append(conv_out_channels[i-1])
-    conv_out_channels.append(conv_in_channels[i]*2)
-    
     for i in range(num_conv_layers):
         
         layers.append(nn.Conv2d(in_channels=conv_in_channels[i], out_channels=conv_out_channels[i], kernel_size=kernel_size, stride=1, padding=1))
