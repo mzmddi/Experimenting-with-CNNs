@@ -168,6 +168,10 @@ class Recorder:
         
         self.model_data["testing_metrics"] = testing_metrics
         
+    def record_layers_in_metadata(self, layers):
+        
+        self.model_data["metadata"]["layers"] = layers
+        
 # lets say i have this dictionnary structure in python: 
 # dict = {
 # "model_name": "model_0"

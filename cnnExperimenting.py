@@ -64,25 +64,21 @@ if __name__=="__main__":
         # outputs = model(images)      # raw logits
         # preds = torch.sigmoid(outputs) > 0.5
         
-        num_epochs = 3
+        num_epochs = 2
         
         train_data_size = len(train_loader.dataset)
         val_data_size = len(val_loader.dataset)
         
         print("--- Starting Training! ---")
         
-        layers = {}
         num_of_layers = len(model)
-        for i in range(len(model)):
-            layers[f"layer_{i}"] = f"{model[i]}"
-        
+                
         r.record_metadata({
             "batch_size": str(batch_size),
             "total_epoch_number": str(num_epochs),
             "total_num_layers": str(num_of_layers),
             "total_conv_layer": str(model_architecture["num_of_conv_layer"]),
             "total_neural_layer": str(model_architecture["num_of_neural_layer"]),
-            "layers": layers
         })
         
         for epoch in range(num_epochs):
@@ -185,7 +181,13 @@ if __name__=="__main__":
             }
             
             r.record_epoch(epoch, val_metrics)
-                
+        
+        layers = {}
+        for i in range(len(model)):
+            layers[f"layer_{i}"] = f"{model[i]}"
+            
+        r.record_layers_in_metadata(layers)
+        
         r.record_timing("training_end")
         print('--- Starting Testing! ---')
         model.eval()
