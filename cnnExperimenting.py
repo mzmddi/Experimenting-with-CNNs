@@ -1,23 +1,14 @@
 # ---NOTES---
-"""
-Entry point of the entire program
-FOOTNOTES: 
-    (1) [batch_size, num_conv_layers, conv_start, kernel_size, pool_size, num_neural_layers, neural_start]
-"""
 
 # ---IMPORTS---
 import sys
 import os
-from components.permutations import permutate, get_first_permutation_list, update_json_file_list
 from components.create_dataset import get_dataset
 from components.model_blueprint import build_model
-from components.training import train_this_model
-from components.visualize import visualize_mae_vs_all_models, visualize_mae_v_epochs
 from components.model_architecture import get_model_architecture
 from components.record_data import Recorder
 import torch
 import torch.nn as nn
-import time
 # ---CODE---
 
 if __name__=="__main__":
